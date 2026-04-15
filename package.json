@@ -1,0 +1,28 @@
+{
+  "name": "earthform",
+  "version": "1.0.0",
+  "description": "Earthform - Raw Elegance pottery website with Vercel Analytics",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ashfaq-network/earthform.git"
+  },
+  "keywords": [
+    "pottery",
+    "earthform",
+    "analytics"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ashfaq-network/earthform/issues"
+  },
+  "homepage": "https://github.com/Ashfaq-network/earthform#readme",
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
+  }
+}
