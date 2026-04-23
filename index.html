@@ -534,5 +534,9 @@ function handleSubmit(e){
 }
 window.addEventListener('scroll',()=>{document.getElementById('topnav').style.boxShadow=window.scrollY>50?'0 2px 20px rgba(92,61,30,.1)':'none';});
 </script>
+<script type="module">
+  import { inject } from 'https://cdn.jsdelivr.net/npm/@vercel/analytics@1/dist/index.mjs';
+  inject();
+</script>
 </body>
 </html>
