@@ -82,7 +82,7 @@ export default function Contact() {
       </section>
 
       <section className="section-pad">
-        <div className="container-earth grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+        <div className="container-earth grid grid-cols-1 gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
           {/* Info */}
           <div className="space-y-5">
             <Reveal>
@@ -91,10 +91,10 @@ export default function Contact() {
                 <p className="font-script text-2xl text-butter">write to us</p>
                 <a
                   href={`mailto:${CONTACT.email}`}
-                  className="mt-2 inline-flex items-center gap-2 font-display text-xl underline-offset-4 hover:underline"
+                  className="mt-2 inline-flex max-w-full items-center gap-2 font-display text-lg break-all underline-offset-4 hover:underline sm:text-xl"
                 >
-                  <Mail size={18} />
-                  {CONTACT.email}
+                  <Mail size={18} className="shrink-0" />
+                  <span className="min-w-0 break-all">{CONTACT.email}</span>
                 </a>
                 <p className="mt-2 flex items-center gap-2 text-sm text-cream/75">
                   <Phone size={16} className="shrink-0 text-cream/60" />
