@@ -17,11 +17,20 @@ gsap.registerPlugin(ScrollTrigger)
 
 function ScrollToTop() {
   const { pathname } = useLocation()
+  const lenis = useLenis()
 
   useEffect(() => {
-    window.scrollTo(0, 0)
+    if (lenis) {
+      lenis.scrollTo(0, { immediate: true, force: true })
+    } else {
+      const root = document.documentElement
+      const previousBehavior = root.style.scrollBehavior
+      root.style.scrollBehavior = 'auto'
+      window.scrollTo(0, 0)
+      root.style.scrollBehavior = previousBehavior
+    }
     ScrollTrigger.refresh()
-  }, [pathname])
+  }, [pathname, lenis])
 
   return null
 }
