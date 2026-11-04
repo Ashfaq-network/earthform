@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Instagram, Music2, Mail, Phone } from 'lucide-react'
 import Logo from '@components/ui/Logo'
+import useSameRouteScroll from '@hooks/useSameRouteScroll'
 import { CONTACT } from '@data/site'
 
 const LINKS = [
@@ -12,6 +13,7 @@ const LINKS = [
 
 export default function Footer() {
   const year = new Date().getFullYear()
+  const scrollIfSame = useSameRouteScroll()
 
   return (
     <footer className="relative overflow-hidden bg-moss-deep text-cream">
@@ -29,7 +31,7 @@ export default function Footer() {
       <div className="container-earth relative py-16 sm:py-20">
         <div className="grid gap-12 lg:grid-cols-[1.5fr_1fr_1fr_1.1fr]">
           <div>
-            <Logo light />
+            <Logo light onClick={() => scrollIfSame('/')} />
             <p className="mt-5 max-w-xs text-pretty text-sm leading-relaxed text-cream/65">
               A small studio of handcrafted cement pieces — cast, sanded and sealed to bring
               character and quiet elegance home. Made slowly, sent with love.
@@ -80,6 +82,7 @@ export default function Footer() {
                 <li key={link.to}>
                   <Link
                     to={link.to}
+                    onClick={() => scrollIfSame(link.to)}
                     className="text-sm text-cream/75 transition-colors hover:text-cream"
                   >
                     {link.label}

@@ -3,6 +3,7 @@ import { Link, NavLink, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Menu, X, Instagram, Music2 } from 'lucide-react'
 import Logo from '@components/ui/Logo'
+import useSameRouteScroll from '@hooks/useSameRouteScroll'
 import { CONTACT } from '@data/site'
 
 const NAV = [
@@ -15,6 +16,7 @@ const NAV = [
 export default function Header() {
   const [open, setOpen] = useState(false)
   const location = useLocation()
+  const scrollIfSame = useSameRouteScroll()
 
   useEffect(() => {
     setOpen(false)
@@ -35,7 +37,12 @@ export default function Header() {
 
       <header className="sticky top-0 z-50 border-b border-sand-deep/50 bg-bone/85 backdrop-blur-md">
         <div className="container-earth flex h-[70px] items-center justify-between gap-4">
-          <Logo onClick={() => setOpen(false)} />
+          <Logo
+            onClick={() => {
+              setOpen(false)
+              scrollIfSame('/')
+            }}
+          />
 
           <nav className="hidden items-center gap-9 md:flex" aria-label="Main navigation">
             {NAV.map((item) => (
@@ -43,6 +50,7 @@ export default function Header() {
                 key={item.to}
                 to={item.to}
                 end={item.to === '/'}
+                onClick={() => scrollIfSame(item.to)}
                 className={({ isActive }) =>
                   `text-[0.74rem] font-semibold uppercase tracking-[0.16em] transition-colors ${
                     isActive ? 'text-moss' : 'text-bark-soft hover:text-moss'
@@ -77,7 +85,11 @@ export default function Header() {
             >
               <Music2 size={17} />
             </a>
-            <Link to="/shop" className="btn btn-primary !px-6 !py-3 text-[0.68rem]">
+            <Link
+              to="/shop"
+              onClick={() => scrollIfSame('/shop')}
+              className="btn btn-primary !px-6 !py-3 text-[0.68rem]"
+            >
               Shop the studio
             </Link>
           </div>
@@ -110,6 +122,10 @@ export default function Header() {
                     key={item.to}
                     to={item.to}
                     end={item.to === '/'}
+                    onClick={() => {
+                      setOpen(false)
+                      scrollIfSame(item.to)
+                    }}
                     className={({ isActive }) =>
                       `rounded-2xl px-4 py-3 font-display text-xl transition-colors ${
                         isActive ? 'bg-sage-mist/70 text-moss' : 'text-bark hover:bg-sage-mist/40'
@@ -138,7 +154,14 @@ export default function Header() {
                   >
                     <Music2 size={17} />
                   </a>
-                  <Link to="/shop" className="btn btn-primary flex-1">
+                  <Link
+                    to="/shop"
+                    onClick={() => {
+                      setOpen(false)
+                      scrollIfSame('/shop')
+                    }}
+                    className="btn btn-primary flex-1"
+                  >
                     Shop the studio
                   </Link>
                 </div>
