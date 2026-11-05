@@ -13,4 +13,11 @@ export const reviews = [
     initial: 'S',
     tone: 'rose',
   },
+  {
+    quote:
+      'Absolutely loved the quality and finishing of the products! Everything was beautifully made, and the service was amazing. Highly recommend Earthform for bulk orders! ❤️',
+    name: 'Jenni',
+    initial: 'J',
+    tone: 'butter',
+  },
 ]
