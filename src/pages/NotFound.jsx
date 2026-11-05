@@ -6,6 +6,7 @@ export default function NotFound() {
   usePageMeta({
     title: 'Page Not Found — earthform',
     description: 'This page has grown over. Wander back to the earthform studio.',
+    noindex: true,
   })
 
   return (
