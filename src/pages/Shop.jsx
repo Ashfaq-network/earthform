@@ -163,6 +163,23 @@ export default function Shop() {
           </p>
 
           <BotanicalDivider className="mt-14" />
+
+          <Reveal className="mt-12">
+            <div className="mx-auto w-full max-w-sm">
+              <div className="arch-frame aspect-[3/4] w-full shadow-soft">
+                <img
+                  src="/images/sets-available.jpg"
+                  alt="A set of handcrafted earthform cement pieces in assorted colours"
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <p className="mt-5 text-center font-display text-2xl text-moss sm:text-3xl">
+                Sets are available.
+              </p>
+            </div>
+          </Reveal>
         </div>
       </section>
 
