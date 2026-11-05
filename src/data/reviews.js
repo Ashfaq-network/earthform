@@ -6,4 +6,11 @@ export const reviews = [
     initial: 'N',
     tone: 'sage',
   },
+  {
+    quote:
+      'Thank you so much for your lovely letter and the amazing service. I received my order safely, and the product quality and value were truly excellent for the price. I’m very happy with my purchase. Your sweet and thoughtful message made the experience even more special and heart touching. It really shows how much you care about your customers. Thank you again for the kindness and great service. I will definitely order again and recommend your shop to others. 💖',
+    name: 'Sachini',
+    initial: 'S',
+    tone: 'rose',
+  },
 ]

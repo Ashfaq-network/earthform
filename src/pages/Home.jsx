@@ -324,7 +324,11 @@ export default function Home() {
 
           <div
             className={`mt-12 grid gap-5 ${
-              reviews.length > 1 ? 'md:grid-cols-2 lg:grid-cols-3' : 'mx-auto max-w-2xl'
+              reviews.length === 1
+                ? 'mx-auto max-w-2xl'
+                : reviews.length === 2
+                  ? 'mx-auto max-w-4xl md:grid-cols-2'
+                  : 'md:grid-cols-2 lg:grid-cols-3'
             }`}
           >
             {reviews.map((review) => (
