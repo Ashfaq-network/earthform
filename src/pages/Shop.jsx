@@ -152,6 +152,21 @@ export default function Shop() {
                 onQuickView={setQuickView}
               />
             ))}
+
+            <Reveal className="card-soft flex flex-col overflow-hidden">
+              <div className="aspect-[4/5] w-full bg-sand/40">
+                <img
+                  src="/images/sets-available.jpg"
+                  alt="A set of handcrafted earthform cement pieces in assorted colours"
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div className="flex flex-1 items-center justify-center p-5 text-center sm:p-6">
+                <h3 className="font-display text-[1.3rem] text-moss">Sets are available.</h3>
+              </div>
+            </Reveal>
           </div>
 
           <p className="mt-10 text-center text-sm text-bark-soft">
@@ -163,23 +178,6 @@ export default function Shop() {
           </p>
 
           <BotanicalDivider className="mt-14" />
-
-          <Reveal className="mt-12">
-            <div className="mx-auto w-full max-w-sm">
-              <div className="arch-frame aspect-[3/4] w-full shadow-soft">
-                <img
-                  src="/images/sets-available.jpg"
-                  alt="A set of handcrafted earthform cement pieces in assorted colours"
-                  loading="lazy"
-                  decoding="async"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <p className="mt-5 text-center font-display text-2xl text-moss sm:text-3xl">
-                Sets are available.
-              </p>
-            </div>
-          </Reveal>
         </div>
       </section>
 
