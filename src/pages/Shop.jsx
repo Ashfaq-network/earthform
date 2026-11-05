@@ -104,8 +104,8 @@ export default function Shop() {
                 <div className="relative mx-auto w-full max-w-xs sm:max-w-sm">
                   <div className="arch-frame aspect-[4/5] w-full shadow-soft">
                     <img
-                      src="/images/colour-set.jpg"
-                      alt="Custom earthform cement pieces made to order in black, white, pink, green, yellow and lavender"
+                      src="/images/custom-order.jpg"
+                      alt="Custom earthform cement pieces made to order in your chosen colours"
                       loading="lazy"
                       decoding="async"
                       className="h-full w-full object-cover"

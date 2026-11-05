@@ -70,8 +70,8 @@ function OrderSummary({ selectedProduct, isCustom, productName, form, subtotal }
           />
         ) : isCustom ? (
           <img
-            src="/images/colour-set.jpg"
-            alt="Custom earthform pieces in six colours"
+            src="/images/custom-order.jpg"
+            alt="Custom earthform pieces made to order"
             loading="lazy"
             decoding="async"
             className="aspect-[4/3] w-full object-cover"
