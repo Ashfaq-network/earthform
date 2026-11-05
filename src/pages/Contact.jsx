@@ -1,18 +1,10 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { AnimatePresence, motion } from 'framer-motion'
-import { Mail, Instagram, Music2, Phone, Send, Check, ArrowRight, MessageCircle } from 'lucide-react'
+import { Mail, Instagram, Music2, Phone, ArrowRight, MessageCircle } from 'lucide-react'
 
 import PageShell from '@components/ui/PageShell'
 import Reveal from '@components/ui/Reveal'
 import usePageMeta from '@hooks/usePageMeta'
 import { CONTACT } from '@data/site'
-import { submitForm } from '@/lib/formSubmit'
-
-const INPUT_CLASS =
-  'w-full rounded-2xl border border-sand-deep/70 bg-cream px-4 py-3 text-sm text-bark placeholder:text-bark-soft/55 transition-colors focus:border-moss focus:outline-none focus:ring-2 focus:ring-sage/30'
-
-const INITIAL = { name: '', email: '', subject: 'A question', message: '' }
 
 const FAQS = [
   {
@@ -37,70 +29,8 @@ export default function Contact() {
   usePageMeta({
     title: 'Say Hello — earthform',
     description:
-      'Questions about a piece or a custom order? Write to the earthform studio — we read every note ourselves.',
+      'Questions about a piece or a custom order? Write to the earthform studio — we read every message ourselves.',
   })
-
-  const [form, setForm] = useState(INITIAL)
-  const [errors, setErrors] = useState({})
-  const [sent, setSent] = useState(false)
-  const [sending, setSending] = useState(false)
-  const [sendError, setSendError] = useState(false)
-  const [honeypot, setHoneypot] = useState('')
-
-  const update = (field) => (event) => {
-    setForm((current) => ({ ...current, [field]: event.target.value }))
-    setErrors((current) => ({ ...current, [field]: undefined }))
-  }
-
-  const validate = () => {
-    const next = {}
-    if (!form.name.trim()) next.name = 'Please tell us your name.'
-    if (!form.email.trim()) {
-      next.email = 'We need an email to write back.'
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      next.email = 'That email doesn’t look quite right.'
-    }
-    if (!form.message.trim()) next.message = 'Add a little note before sending.'
-    return next
-  }
-
-  const handleSubmit = async (event) => {
-    event.preventDefault()
-    const next = validate()
-    setErrors(next)
-    if (Object.keys(next).length > 0 || sending) return
-
-    setSending(true)
-    setSendError(false)
-
-    const fullMessage = [
-      `Name: ${form.name.trim()}`,
-      `Email: ${form.email.trim()}`,
-      `Subject: ${form.subject}`,
-      '',
-      form.message.trim(),
-    ].join('\n')
-
-    try {
-      await submitForm({
-        _subject: `Website enquiry — ${form.subject}`,
-        _replyto: form.email.trim(),
-        _honey: honeypot,
-        name: form.name.trim(),
-        email: form.email.trim(),
-        subject: form.subject,
-        message: fullMessage,
-        source: 'earthform website contact form',
-      })
-      setSent(true)
-      setForm(INITIAL)
-      setHoneypot('')
-    } catch {
-      setSendError(true)
-    } finally {
-      setSending(false)
-    }
-  }
 
   return (
     <PageShell>
@@ -119,9 +49,9 @@ export default function Contact() {
       </section>
 
       <section className="section-pad">
-        <div className="container-earth grid grid-cols-1 gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+        <div className="container-earth grid grid-cols-1 gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-stretch lg:gap-16">
           {/* Info */}
-          <div className="space-y-5">
+          <div className="flex flex-col justify-center">
             <Reveal>
               <div className="relative overflow-hidden rounded-[2rem] bg-moss p-7 text-cream shadow-soft">
                 <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-sage/25 blur-2xl" />
@@ -183,198 +113,18 @@ export default function Contact() {
                 </div>
               </div>
             </Reveal>
-
-            <Reveal delay={0.08}>
-              <div className="arch-frame h-56 w-full shadow-soft">
-                <img
-                  src="/images/products/cement/cloud-shape.jpg"
-                  alt="Hand-cast cement cloud shape"
-                  loading="lazy"
-                  decoding="async"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            </Reveal>
           </div>
 
-          {/* Form */}
-          <Reveal delay={0.1}>
-            <div className="rounded-[2rem] border border-sand-deep/60 bg-cream p-6 shadow-soft sm:p-9">
-              <AnimatePresence mode="wait">
-                {sent ? (
-                  <motion.div
-                    key="success"
-                    role="status"
-                    aria-live="polite"
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.4 }}
-                    className="flex min-h-[26rem] flex-col items-center justify-center text-center"
-                  >
-                    <span className="grid h-16 w-16 place-items-center rounded-full bg-sage-mist text-moss">
-                      <Check size={28} />
-                    </span>
-                    <h2 className="mt-6 font-display text-3xl text-moss">Your note is on its way.</h2>
-                    <p className="mt-3 max-w-sm text-pretty text-sm leading-relaxed text-bark-soft">
-                      Thank you for writing. We read every message ourselves and usually reply
-                      within two studio days — often with a little cement dust on our hands.
-                    </p>
-                    <p className="mt-4 font-script text-2xl text-terra">talk soon</p>
-                    <button
-                      type="button"
-                      className="btn btn-outline mt-7"
-                      onClick={() => setSent(false)}
-                    >
-                      Send another note
-                    </button>
-                  </motion.div>
-                ) : (
-                  <motion.form
-                    key="form"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    onSubmit={handleSubmit}
-                    noValidate
-                    className="space-y-5"
-                  >
-                    <input
-                      type="text"
-                      name="_honey"
-                      value={honeypot}
-                      onChange={(event) => setHoneypot(event.target.value)}
-                      className="hidden"
-                      tabIndex={-1}
-                      autoComplete="off"
-                      aria-hidden="true"
-                    />
-
-                    <div>
-                      <h2 className="font-display text-[1.7rem] text-moss">Send a little note</h2>
-                      <p className="mt-1 text-sm text-bark-soft">
-                        We'll write back from the studio, usually within two days.
-                      </p>
-                    </div>
-
-                    <div className="grid gap-5 sm:grid-cols-2">
-                      <div>
-                        <label htmlFor="name" className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-moss">
-                          Your name
-                        </label>
-                        <input
-                          id="name"
-                          name="name"
-                          type="text"
-                          autoComplete="name"
-                          value={form.name}
-                          onChange={update('name')}
-                          aria-invalid={Boolean(errors.name)}
-                          aria-describedby={errors.name ? 'name-error' : undefined}
-                          placeholder="Clover Meadow"
-                          className={INPUT_CLASS}
-                        />
-                        {errors.name && (
-                          <p id="name-error" className="mt-1.5 text-xs text-terra-deep">
-                            {errors.name}
-                          </p>
-                        )}
-                      </div>
-
-                      <div>
-                        <label htmlFor="email" className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-moss">
-                          Email
-                        </label>
-                        <input
-                          id="email"
-                          name="email"
-                          type="email"
-                          autoComplete="email"
-                          value={form.email}
-                          onChange={update('email')}
-                          aria-invalid={Boolean(errors.email)}
-                          aria-describedby={errors.email ? 'email-error' : undefined}
-                          placeholder="you@somewhere.com"
-                          className={INPUT_CLASS}
-                        />
-                        {errors.email && (
-                          <p id="email-error" className="mt-1.5 text-xs text-terra-deep">
-                            {errors.email}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div>
-                      <label htmlFor="subject" className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-moss">
-                        What's it about?
-                      </label>
-                      <select
-                        id="subject"
-                        name="subject"
-                        value={form.subject}
-                        onChange={update('subject')}
-                        className={INPUT_CLASS}
-                      >
-                        <option>A question</option>
-                        <option>A custom order</option>
-                        <option>Wholesale</option>
-                        <option>Just saying hi</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label htmlFor="message" className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-moss">
-                        Your note
-                      </label>
-                      <textarea
-                        id="message"
-                        name="message"
-                        rows={5}
-                        value={form.message}
-                        onChange={update('message')}
-                        aria-invalid={Boolean(errors.message)}
-                        aria-describedby={errors.message ? 'message-error' : undefined}
-                        placeholder="Tell us a little about what you're dreaming of…"
-                        className={`${INPUT_CLASS} resize-none`}
-                      />
-                      {errors.message && (
-                        <p id="message-error" className="mt-1.5 text-xs text-terra-deep">
-                          {errors.message}
-                        </p>
-                      )}
-                    </div>
-
-                    {sendError && (
-                      <div
-                        role="alert"
-                        className="rounded-2xl border border-terra/30 bg-terra/5 p-4 text-sm leading-relaxed text-terra-deep"
-                      >
-                        <p>
-                          We couldn't send your note just now. Please email us directly at{' '}
-                          <a
-                            href={`mailto:${CONTACT.email}`}
-                            className="font-semibold underline underline-offset-2"
-                          >
-                            {CONTACT.email}
-                          </a>
-                          .
-                        </p>
-                      </div>
-                    )}
-
-                    <button
-                      type="submit"
-                      disabled={sending}
-                      className="btn btn-primary w-full disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
-                    >
-                      {sending ? 'Sending…' : 'Send your note'}
-                      <Send size={15} />
-                    </button>
-                  </motion.form>
-                )}
-              </AnimatePresence>
+          {/* Image */}
+          <Reveal delay={0.1} className="h-full">
+            <div className="arch-frame h-64 w-full shadow-soft lg:h-full lg:min-h-[30rem]">
+              <img
+                src="/images/products/cement/cloud-shape.jpg"
+                alt="Hand-cast cement cloud shape"
+                loading="lazy"
+                decoding="async"
+                className="h-full w-full object-cover"
+              />
             </div>
           </Reveal>
         </div>

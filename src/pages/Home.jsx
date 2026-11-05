@@ -10,13 +10,10 @@ import Marquee from '@components/ui/Marquee'
 import SectionHeading from '@components/ui/SectionHeading'
 import Reveal from '@components/ui/Reveal'
 import ProductCard from '@components/ui/ProductCard'
-import TestimonialCard from '@components/ui/TestimonialCard'
 import QuickViewModal from '@components/ui/QuickViewModal'
-import BotanicalDivider from '@components/ui/BotanicalDivider'
 
 import usePageMeta from '@hooks/usePageMeta'
 import { featuredProducts } from '@data/products'
-import { testimonials } from '@data/testimonials'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -312,32 +309,6 @@ export default function Home() {
               <ArrowRight size={15} />
             </Link>
           </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="section-pad">
-        <div className="container-earth">
-          <SectionHeading
-            align="center"
-            eyebrow="love notes"
-            title={
-              <>
-                Little things, <span className="italic text-terra">fondly kept</span>
-              </>
-            }
-            description="Notes tucked into our inbox from homes and gardens around the world."
-          />
-
-          <div className="mt-12 grid gap-5 md:grid-cols-3">
-            {testimonials.map((testimonial) => (
-              <Reveal key={testimonial.name}>
-                <TestimonialCard testimonial={testimonial} />
-              </Reveal>
-            ))}
-          </div>
-
-          <BotanicalDivider className="mt-14" />
         </div>
       </section>
 
