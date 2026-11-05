@@ -4,7 +4,7 @@ import { Mail, Instagram, Music2, Phone, ArrowRight, MessageCircle } from 'lucid
 import PageShell from '@components/ui/PageShell'
 import Reveal from '@components/ui/Reveal'
 import usePageMeta from '@hooks/usePageMeta'
-import { CONTACT } from '@data/site'
+import { CONTACT, DELIVERY } from '@data/site'
 
 const FAQS = [
   {
@@ -18,6 +18,10 @@ const FAQS = [
   {
     q: 'What colours can I choose from?',
     a: 'Every piece is available in black, white, pink, green, yellow and lavender. If you have another colour in mind, email or DM us — we love a custom request.',
+  },
+  {
+    q: 'How much is delivery?',
+    a: `Delivery is Rs. ${DELIVERY.colombo} within Colombo and Rs. ${DELIVERY.outside} outside Colombo.`,
   },
   {
     q: 'How long does shipping take?',

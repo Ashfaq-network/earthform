@@ -19,7 +19,7 @@ import BotanicalDivider from '@components/ui/BotanicalDivider'
 import { COLOURS } from '@components/ui/ColorSwatches'
 import usePageMeta from '@hooks/usePageMeta'
 import { products } from '@data/products'
-import { CONTACT } from '@data/site'
+import { CONTACT, DELIVERY } from '@data/site'
 import { submitForm } from '@/lib/formSubmit'
 
 const INPUT_CLASS =
@@ -113,10 +113,20 @@ function OrderSummary({ selectedProduct, isCustom, productName, form, subtotal }
           <dt>Subtotal</dt>
           <dd>{subtotal ? `Rs. ${subtotal}` : 'To confirm'}</dd>
         </div>
+        <div className="flex items-baseline justify-between gap-4">
+          <dt className="text-bark-soft">Delivery</dt>
+          <dd className="text-right font-medium text-moss">
+            Rs. {DELIVERY.colombo} Colombo
+            <span className="block text-xs font-normal text-bark-soft">
+              Rs. {DELIVERY.outside} outside
+            </span>
+          </dd>
+        </div>
       </dl>
 
       <p className="mt-3 text-xs leading-relaxed text-bark-soft">
-        Delivery is confirmed after we reply. This is an order request — nothing is charged now.
+        We'll confirm your delivery zone and total after you send your request. Nothing is
+        charged now.
       </p>
 
       <div className="mt-5 rounded-2xl bg-sage-mist/60 p-5">
@@ -217,6 +227,7 @@ export default function Order() {
       `Phone/WhatsApp: ${form.phone || '—'}`,
       `Email: ${form.email || '—'}`,
       `Delivery address: ${form.address || '—'}`,
+      `Delivery: Rs. ${DELIVERY.colombo} within Colombo / Rs. ${DELIVERY.outside} outside Colombo`,
       `Notes: ${form.notes || '—'}`,
     ].join('\n')
 
@@ -247,6 +258,7 @@ export default function Order() {
       colour: form.colour,
       quantity: form.quantity,
       subtotal: subtotal ? `Rs. ${subtotal}` : 'To confirm',
+      delivery: `Rs. ${DELIVERY.colombo} Colombo / Rs. ${DELIVERY.outside} outside`,
     }
 
     try {
@@ -261,6 +273,7 @@ export default function Order() {
         colour: summary.colour,
         quantity: summary.quantity,
         subtotal: summary.subtotal,
+        delivery: summary.delivery,
         address: form.address.trim(),
         notes: form.notes.trim() || '—',
         source: 'earthform website order form',
@@ -339,6 +352,7 @@ export default function Order() {
                         ['Colour', sentSummary.colour],
                         ['Quantity', sentSummary.quantity],
                         ['Subtotal', sentSummary.subtotal],
+                        ['Delivery', sentSummary.delivery],
                       ].map(([label, value]) => (
                         <div key={label} className="flex items-baseline justify-between gap-4">
                           <dt>{label}</dt>
@@ -567,11 +581,20 @@ export default function Order() {
                         value={form.address}
                         onChange={update('address')}
                         aria-invalid={Boolean(errors.address)}
-                        aria-describedby={errors.address ? 'address-error' : undefined}
+                        aria-describedby={
+                          errors.address ? 'address-error address-delivery' : 'address-delivery'
+                        }
                         placeholder="House / street, city, district, postal code"
                         className={`${INPUT_CLASS} resize-none`}
                       />
                       <FieldError id="address-error">{errors.address}</FieldError>
+                      <p
+                        id="address-delivery"
+                        className="mt-1.5 text-xs leading-relaxed text-bark-soft"
+                      >
+                        Delivery is Rs. {DELIVERY.colombo} within Colombo and Rs.{' '}
+                        {DELIVERY.outside} outside Colombo.
+                      </p>
                     </div>
 
                     <div className="sm:col-span-2">

@@ -12,3 +12,8 @@ export const CONTACT = {
     url: 'https://tiktok.com/@earthform0',
   },
 }
+
+export const DELIVERY = {
+  colombo: 500,
+  outside: 600,
+}
