@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { ArrowRight, Star, Layers, HeartHandshake, Recycle } from 'lucide-react'
+import { ArrowRight, Layers, HeartHandshake, Recycle } from 'lucide-react'
 
 import PageShell from '@components/ui/PageShell'
 import Marquee from '@components/ui/Marquee'
@@ -11,9 +11,11 @@ import SectionHeading from '@components/ui/SectionHeading'
 import Reveal from '@components/ui/Reveal'
 import ProductCard from '@components/ui/ProductCard'
 import QuickViewModal from '@components/ui/QuickViewModal'
+import ReviewCard from '@components/ui/ReviewCard'
 
 import usePageMeta from '@hooks/usePageMeta'
 import { featuredProducts } from '@data/products'
+import { reviews } from '@data/reviews'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -138,19 +140,13 @@ export default function Home() {
             </motion.div>
 
             <motion.div
-              className="mt-8 flex items-center gap-3"
+              className="mt-8 flex items-center gap-2 text-xs tracking-wide text-bark-soft"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              <span className="flex items-center gap-0.5 text-terra" aria-hidden="true">
-                {[0, 1, 2, 3, 4].map((i) => (
-                  <Star key={i} size={14} fill="currentColor" strokeWidth={0} />
-                ))}
-              </span>
-              <span className="text-xs tracking-wide text-bark-soft">
-                Loved in 2,000+ homes · tucked into little corners
-              </span>
+              <span className="h-1.5 w-1.5 rounded-full bg-terra" aria-hidden="true" />
+              Handmade in small batches · sent with love
             </motion.div>
           </div>
 
@@ -308,6 +304,34 @@ export default function Home() {
               Meet the studio
               <ArrowRight size={15} />
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Reviews */}
+      <section className="section-pad">
+        <div className="container-earth">
+          <SectionHeading
+            align="center"
+            eyebrow="kind words"
+            title={
+              <>
+                Little things, <span className="italic text-terra">fondly kept</span>
+              </>
+            }
+            description="Real notes from people who've welcomed an earthform piece into their home."
+          />
+
+          <div
+            className={`mt-12 grid gap-5 ${
+              reviews.length > 1 ? 'md:grid-cols-2 lg:grid-cols-3' : 'mx-auto max-w-2xl'
+            }`}
+          >
+            {reviews.map((review) => (
+              <Reveal key={review.name} className="h-full">
+                <ReviewCard review={review} />
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>
