@@ -264,6 +264,7 @@ export default function Order() {
         address: form.address.trim(),
         notes: form.notes.trim() || '—',
         source: 'earthform website order form',
+        message: buildMessage(),
       })
       setSentSummary(summary)
       setStatus('sent')

@@ -1,6 +1,9 @@
 import { CONTACT } from '@data/site'
 
-const ENDPOINT = `https://formsubmit.co/ajax/${CONTACT.email}`
+const ENDPOINT = 'https://api.emailjs.com/api/v1.0/email/send'
+const SERVICE_ID = 'service_cg0ekut'
+const TEMPLATE_ID = 'template_wr2ypkd'
+const PUBLIC_KEY = 'TwzOsvi8J7kp4IoqC'
 
 export async function submitForm(payload) {
   if (payload._honey) return { success: 'true' }
@@ -13,28 +16,29 @@ export async function submitForm(payload) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Accept: 'application/json',
       },
       body: JSON.stringify({
-        _template: 'table',
-        _captcha: 'false',
-        ...payload,
+        service_id: SERVICE_ID,
+        template_id: TEMPLATE_ID,
+        user_id: PUBLIC_KEY,
+        template_params: {
+          to_email: CONTACT.email,
+          subject: payload._subject || 'New earthform website message',
+          from_name: payload.name || 'earthform website',
+          reply_to: payload._replyto || CONTACT.email,
+          message: payload.message || 'No message provided.',
+        },
       }),
       signal: controller.signal,
     })
 
-    let data = {}
-    try {
-      data = await response.json()
-    } catch {
-      data = {}
+    const text = await response.text()
+
+    if (!response.ok) {
+      throw new Error(text || 'The form could not be sent.')
     }
 
-    if (!response.ok || data.success === false || data.success === 'false') {
-      throw new Error(data.message || 'The form could not be sent.')
-    }
-
-    return data
+    return { success: 'true', message: text }
   } finally {
     clearTimeout(timeout)
   }

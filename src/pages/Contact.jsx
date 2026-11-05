@@ -73,6 +73,14 @@ export default function Contact() {
     setSending(true)
     setSendError(false)
 
+    const fullMessage = [
+      `Name: ${form.name.trim()}`,
+      `Email: ${form.email.trim()}`,
+      `Subject: ${form.subject}`,
+      '',
+      form.message.trim(),
+    ].join('\n')
+
     try {
       await submitForm({
         _subject: `Website enquiry — ${form.subject}`,
@@ -81,7 +89,7 @@ export default function Contact() {
         name: form.name.trim(),
         email: form.email.trim(),
         subject: form.subject,
-        message: form.message.trim(),
+        message: fullMessage,
         source: 'earthform website contact form',
       })
       setSent(true)
