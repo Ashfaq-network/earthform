@@ -130,13 +130,20 @@ export default function QuickViewModal({ product, onClose }) {
 
                 <div className="mt-auto pt-7">
                   <Link
-                    to="/contact"
+                    to={`/order?product=${product.id}`}
                     onClick={onClose}
                     className="btn btn-primary w-full"
                   >
-                    Enquire about this piece
+                    Order this piece
                   </Link>
-                  <p className="mt-3 text-center text-xs tracking-wide text-bark-soft">
+                  <Link
+                    to="/contact"
+                    onClick={onClose}
+                    className="mt-3 block text-center text-xs font-semibold tracking-wide text-bark-soft transition-colors hover:text-moss"
+                  >
+                    Ask a question instead
+                  </Link>
+                  <p className="mt-2 text-center text-xs tracking-wide text-bark-soft">
                     Ships in 3–5 days · gift wrapping included
                   </p>
                 </div>

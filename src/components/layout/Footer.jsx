@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Instagram, Music2, Mail, Phone } from 'lucide-react'
+import { Instagram, Music2, Mail, Phone, MessageCircle } from 'lucide-react'
 import Logo from '@components/ui/Logo'
 import useSameRouteScroll from '@hooks/useSameRouteScroll'
 import { CONTACT } from '@data/site'
@@ -7,6 +7,7 @@ import { CONTACT } from '@data/site'
 const LINKS = [
   { label: 'Home', to: '/' },
   { label: 'Shop', to: '/shop' },
+  { label: 'How to order', to: '/order' },
   { label: 'Our story', to: '/about' },
   { label: 'Say hello', to: '/contact' },
 ]
@@ -47,6 +48,11 @@ export default function Footer() {
                   icon: Music2,
                   label: `TikTok ${CONTACT.tiktok.handle}`,
                   href: CONTACT.tiktok.url,
+                },
+                {
+                  icon: MessageCircle,
+                  label: `WhatsApp ${CONTACT.phoneDisplay}`,
+                  href: CONTACT.whatsapp,
                 },
                 {
                   icon: Mail,

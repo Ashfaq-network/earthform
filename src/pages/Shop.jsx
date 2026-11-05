@@ -95,7 +95,7 @@ export default function Shop() {
                     — we love a custom request.
                   </p>
                   <ColorSwatches showLabels className="mt-5" />
-                  <Link to="/contact" className="btn btn-primary mt-6">
+                  <Link to="/order?product=custom" className="btn btn-primary mt-6">
                     Start a custom order
                     <ArrowRight size={16} />
                   </Link>
@@ -156,8 +156,8 @@ export default function Shop() {
 
           <p className="mt-10 text-center text-sm text-bark-soft">
             Looking for something particular?{' '}
-            <Link to="/contact" className="link-squiggle font-semibold text-moss">
-              Ask about a custom piece
+            <Link to="/order?product=custom" className="link-squiggle font-semibold text-moss">
+              Start a custom request
             </Link>
             .
           </p>

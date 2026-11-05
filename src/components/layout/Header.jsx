@@ -86,11 +86,11 @@ export default function Header() {
               <Music2 size={17} />
             </a>
             <Link
-              to="/shop"
-              onClick={() => scrollIfSame('/shop')}
+              to="/order"
+              onClick={() => scrollIfSame('/order')}
               className="btn btn-primary !px-6 !py-3 text-[0.68rem]"
             >
-              Shop the studio
+              Start an order
             </Link>
           </div>
 
@@ -155,14 +155,14 @@ export default function Header() {
                     <Music2 size={17} />
                   </a>
                   <Link
-                    to="/shop"
+                    to="/order"
                     onClick={() => {
                       setOpen(false)
-                      scrollIfSame('/shop')
+                      scrollIfSame('/order')
                     }}
                     className="btn btn-primary flex-1"
                   >
-                    Shop the studio
+                    Start an order
                   </Link>
                 </div>
               </div>

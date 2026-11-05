@@ -1,11 +1,13 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Mail, Instagram, Music2, Phone, Send, Check, ArrowRight } from 'lucide-react'
+import { Mail, Instagram, Music2, Phone, Send, Check, ArrowRight, MessageCircle } from 'lucide-react'
 
 import PageShell from '@components/ui/PageShell'
 import Reveal from '@components/ui/Reveal'
 import usePageMeta from '@hooks/usePageMeta'
 import { CONTACT } from '@data/site'
+import { submitForm } from '@/lib/formSubmit'
 
 const INPUT_CLASS =
   'w-full rounded-2xl border border-sand-deep/70 bg-cream px-4 py-3 text-sm text-bark placeholder:text-bark-soft/55 transition-colors focus:border-moss focus:outline-none focus:ring-2 focus:ring-sage/30'
@@ -13,6 +15,10 @@ const INPUT_CLASS =
 const INITIAL = { name: '', email: '', subject: 'A question', message: '' }
 
 const FAQS = [
+  {
+    q: 'How do I place an order?',
+    a: 'Choose a piece in the shop and select “Order this piece”, or use the order form. Tell us your colour, quantity and delivery address — we will confirm availability, delivery and payment with you.',
+  },
   {
     q: 'Do you take custom orders?',
     a: 'Sometimes — it depends on the season and the piece. Tell us what you have in mind and we will write back honestly.',
@@ -37,6 +43,9 @@ export default function Contact() {
   const [form, setForm] = useState(INITIAL)
   const [errors, setErrors] = useState({})
   const [sent, setSent] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [sendError, setSendError] = useState(false)
+  const [honeypot, setHoneypot] = useState('')
 
   const update = (field) => (event) => {
     setForm((current) => ({ ...current, [field]: event.target.value }))
@@ -55,14 +64,34 @@ export default function Contact() {
     return next
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
     const next = validate()
     setErrors(next)
-    if (Object.keys(next).length > 0) return
+    if (Object.keys(next).length > 0 || sending) return
 
-    setSent(true)
-    setForm(INITIAL)
+    setSending(true)
+    setSendError(false)
+
+    try {
+      await submitForm({
+        _subject: `Website enquiry — ${form.subject}`,
+        _replyto: form.email.trim(),
+        _honey: honeypot,
+        name: form.name.trim(),
+        email: form.email.trim(),
+        subject: form.subject,
+        message: form.message.trim(),
+        source: 'earthform website contact form',
+      })
+      setSent(true)
+      setForm(INITIAL)
+      setHoneypot('')
+    } catch {
+      setSendError(true)
+    } finally {
+      setSending(false)
+    }
   }
 
   return (
@@ -121,6 +150,28 @@ export default function Contact() {
                     <Music2 size={15} />
                     {CONTACT.tiktok.handle}
                   </a>
+                  <a
+                    href={CONTACT.whatsapp}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="inline-flex items-center gap-2 rounded-full border border-cream/25 px-4 py-2.5 text-xs font-semibold tracking-wide text-cream/85 transition-colors hover:bg-cream hover:text-moss-deep"
+                  >
+                    <MessageCircle size={15} />
+                    WhatsApp
+                  </a>
+                </div>
+                <div className="mt-6 border-t border-cream/15 pt-5">
+                  <p className="text-sm leading-relaxed text-cream/70">
+                    Ready to choose a piece? Send an order request and we'll confirm the rest
+                    with you.
+                  </p>
+                  <Link
+                    to="/order"
+                    className="btn btn-primary mt-4 w-full !bg-cream !text-moss-deep hover:!bg-butter"
+                  >
+                    Start an order
+                    <ArrowRight size={16} />
+                  </Link>
                 </div>
               </div>
             </Reveal>
@@ -181,6 +232,17 @@ export default function Contact() {
                     noValidate
                     className="space-y-5"
                   >
+                    <input
+                      type="text"
+                      name="_honey"
+                      value={honeypot}
+                      onChange={(event) => setHoneypot(event.target.value)}
+                      className="hidden"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      aria-hidden="true"
+                    />
+
                     <div>
                       <h2 className="font-display text-[1.7rem] text-moss">Send a little note</h2>
                       <p className="mt-1 text-sm text-bark-soft">
@@ -276,8 +338,30 @@ export default function Contact() {
                       )}
                     </div>
 
-                    <button type="submit" className="btn btn-primary w-full sm:w-auto">
-                      Send your note
+                    {sendError && (
+                      <div
+                        role="alert"
+                        className="rounded-2xl border border-terra/30 bg-terra/5 p-4 text-sm leading-relaxed text-terra-deep"
+                      >
+                        <p>
+                          We couldn't send your note just now. Please email us directly at{' '}
+                          <a
+                            href={`mailto:${CONTACT.email}`}
+                            className="font-semibold underline underline-offset-2"
+                          >
+                            {CONTACT.email}
+                          </a>
+                          .
+                        </p>
+                      </div>
+                    )}
+
+                    <button
+                      type="submit"
+                      disabled={sending}
+                      className="btn btn-primary w-full disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
+                    >
+                      {sending ? 'Sending…' : 'Send your note'}
                       <Send size={15} />
                     </button>
                   </motion.form>
