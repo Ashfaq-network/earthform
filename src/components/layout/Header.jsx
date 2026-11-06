@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Menu, X, Instagram, Music2 } from 'lucide-react'
@@ -18,12 +18,37 @@ export default function Header() {
   const [open, setOpen] = useState(false)
   const location = useLocation()
   const scrollIfSame = useSameRouteScroll()
+  const menuButtonRef = useRef(null)
 
   useScrollLock(open)
 
   useEffect(() => {
     setOpen(false)
   }, [location.pathname])
+
+  useEffect(() => {
+    const desktop = window.matchMedia('(min-width: 768px)')
+    const onChange = (event) => {
+      if (event.matches) setOpen(false)
+    }
+
+    desktop.addEventListener('change', onChange)
+    return () => desktop.removeEventListener('change', onChange)
+  }, [])
+
+  useEffect(() => {
+    if (!open) return
+
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setOpen(false)
+        menuButtonRef.current?.focus()
+      }
+    }
+
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [open])
 
   return (
     <>
@@ -91,10 +116,12 @@ export default function Header() {
           </div>
 
           <button
+            ref={menuButtonRef}
             type="button"
             onClick={() => setOpen((value) => !value)}
             aria-label={open ? 'Close menu' : 'Open menu'}
             aria-expanded={open}
+            aria-controls={open ? 'mobile-navigation' : undefined}
             className="grid h-10 w-10 place-items-center rounded-full border border-sand-deep/70 text-moss md:hidden"
           >
             {open ? <X size={18} /> : <Menu size={18} />}
@@ -105,6 +132,7 @@ export default function Header() {
           {open && (
             <motion.nav
               key="mobile-menu"
+              id="mobile-navigation"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
@@ -112,54 +140,59 @@ export default function Header() {
               className="overflow-hidden border-t border-sand-deep/50 bg-cream md:hidden"
               aria-label="Mobile navigation"
             >
-              <div className="container-earth flex flex-col gap-1 py-4">
-                {NAV.map((item) => (
-                  <NavLink
-                    key={item.to}
-                    to={item.to}
-                    end={item.to === '/'}
-                    onClick={() => {
-                      setOpen(false)
-                      scrollIfSame(item.to)
-                    }}
-                    className={({ isActive }) =>
-                      `rounded-2xl px-4 py-3 font-display text-xl transition-colors ${
-                        isActive ? 'bg-sage-mist/70 text-moss' : 'text-bark hover:bg-sage-mist/40'
-                      }`
-                    }
-                  >
-                    {item.label}
-                  </NavLink>
-                ))}
-                <div className="mt-3 flex items-center gap-3 px-4 pb-2">
-                  <a
-                    href={CONTACT.instagram.url}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    aria-label={`earthform on Instagram (${CONTACT.instagram.handle})`}
-                    className="grid h-10 w-10 place-items-center rounded-full bg-sage-mist text-moss"
-                  >
-                    <Instagram size={17} />
-                  </a>
-                  <a
-                    href={CONTACT.tiktok.url}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    aria-label={`earthform on TikTok (${CONTACT.tiktok.handle})`}
-                    className="grid h-10 w-10 place-items-center rounded-full bg-sage-mist text-moss"
-                  >
-                    <Music2 size={17} />
-                  </a>
-                  <Link
-                    to="/order"
-                    onClick={() => {
-                      setOpen(false)
-                      scrollIfSame('/order')
-                    }}
-                    className="btn btn-primary flex-1"
-                  >
-                    Start an order
-                  </Link>
+              <div
+                className="max-h-[calc(100dvh-8rem)] overflow-y-auto overscroll-contain"
+                data-lenis-prevent
+              >
+                <div className="container-earth flex flex-col gap-1 py-4">
+                  {NAV.map((item) => (
+                    <NavLink
+                      key={item.to}
+                      to={item.to}
+                      end={item.to === '/'}
+                      onClick={() => {
+                        setOpen(false)
+                        scrollIfSame(item.to)
+                      }}
+                      className={({ isActive }) =>
+                        `rounded-2xl px-4 py-3 font-display text-xl transition-colors ${
+                          isActive ? 'bg-sage-mist/70 text-moss' : 'text-bark hover:bg-sage-mist/40'
+                        }`
+                      }
+                    >
+                      {item.label}
+                    </NavLink>
+                  ))}
+                  <div className="mt-3 flex items-center gap-3 px-4 pb-2">
+                    <a
+                      href={CONTACT.instagram.url}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      aria-label={`earthform on Instagram (${CONTACT.instagram.handle})`}
+                      className="grid h-10 w-10 place-items-center rounded-full bg-sage-mist text-moss"
+                    >
+                      <Instagram size={17} />
+                    </a>
+                    <a
+                      href={CONTACT.tiktok.url}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      aria-label={`earthform on TikTok (${CONTACT.tiktok.handle})`}
+                      className="grid h-10 w-10 place-items-center rounded-full bg-sage-mist text-moss"
+                    >
+                      <Music2 size={17} />
+                    </a>
+                    <Link
+                      to="/order"
+                      onClick={() => {
+                        setOpen(false)
+                        scrollIfSame('/order')
+                      }}
+                      className="btn btn-primary flex-1"
+                    >
+                      Start an order
+                    </Link>
+                  </div>
                 </div>
               </div>
             </motion.nav>

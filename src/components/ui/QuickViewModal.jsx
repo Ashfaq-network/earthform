@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { X, Leaf } from 'lucide-react'
@@ -8,21 +8,74 @@ import ColorSwatches from './ColorSwatches'
 import { CONTACT } from '@data/site'
 
 export default function QuickViewModal({ product, onClose }) {
+  const dialogRef = useRef(null)
+  const closeButtonRef = useRef(null)
+  const triggerRef = useRef(null)
+  const onCloseRef = useRef(onClose)
+
   useScrollLock(Boolean(product))
+
+  useEffect(() => {
+    onCloseRef.current = onClose
+  }, [onClose])
 
   useEffect(() => {
     if (!product) return
 
+    triggerRef.current = document.activeElement
+    closeButtonRef.current?.focus()
+
+    const dialog = dialogRef.current
+    const focusableSelector =
+      'a[href], button:not([disabled]):not([tabindex="-1"]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    const getFocusable = () =>
+      dialog
+        ? [...dialog.querySelectorAll(focusableSelector)].filter(
+            (element) => element.getClientRects().length > 0,
+          )
+        : []
+
     const onKeyDown = (event) => {
-      if (event.key === 'Escape') onClose()
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        onCloseRef.current()
+        return
+      }
+
+      if (event.key !== 'Tab') return
+
+      const focusable = getFocusable()
+      if (focusable.length === 0) {
+        event.preventDefault()
+        dialog?.focus()
+        return
+      }
+
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      const active = document.activeElement
+      const inside = dialog?.contains(active)
+      const atStart = active === first || active === dialog
+      const atEnd = active === last || active === dialog
+
+      if (event.shiftKey && (atStart || !inside)) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && (atEnd || !inside)) {
+        event.preventDefault()
+        first.focus()
+      }
     }
 
     document.addEventListener('keydown', onKeyDown)
 
     return () => {
       document.removeEventListener('keydown', onKeyDown)
+      if (triggerRef.current instanceof HTMLElement && triggerRef.current.isConnected) {
+        triggerRef.current.focus()
+      }
     }
-  }, [product, onClose])
+  }, [product])
 
   return (
     <AnimatePresence>
@@ -36,6 +89,7 @@ export default function QuickViewModal({ product, onClose }) {
         >
           <motion.button
             type="button"
+            tabIndex={-1}
             className="absolute inset-0 cursor-default bg-moss-deep/45 backdrop-blur-sm"
             onClick={onClose}
             aria-label="Close quick view"
@@ -45,19 +99,22 @@ export default function QuickViewModal({ product, onClose }) {
           />
 
           <motion.div
+            ref={dialogRef}
             role="dialog"
             aria-modal="true"
             aria-label={product.name}
+            tabIndex={-1}
+            data-lenis-prevent
             initial={{ opacity: 0, y: 26, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.98 }}
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            className="relative z-10 max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-[2rem] bg-cream shadow-lift"
+            className="relative z-10 max-h-[92vh] w-full max-w-3xl overflow-y-auto overscroll-contain rounded-[2rem] bg-cream shadow-lift focus:outline-none"
           >
             <button
+              ref={closeButtonRef}
               type="button"
               onClick={onClose}
-              autoFocus
               aria-label="Close"
               className="absolute right-4 top-4 z-20 grid h-10 w-10 place-items-center rounded-full bg-cream/90 text-moss shadow-soft backdrop-blur transition-colors hover:bg-moss hover:text-cream"
             >

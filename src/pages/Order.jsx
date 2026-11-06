@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
   ArrowRight,
@@ -165,12 +165,26 @@ export default function Order() {
   const [honeypot, setHoneypot] = useState('')
   const [status, setStatus] = useState('idle')
   const [sentSummary, setSentSummary] = useState(null)
+  const successRef = useRef(null)
+  const resetFocusRef = useRef(false)
 
   useEffect(() => {
     if (productParam === CUSTOM || products.some((product) => product.id === productParam)) {
       setForm((current) => ({ ...current, productId: productParam }))
     }
   }, [productParam])
+
+  useEffect(() => {
+    if (status === 'sent') {
+      successRef.current?.focus()
+      return
+    }
+
+    if (status === 'idle' && resetFocusRef.current) {
+      resetFocusRef.current = false
+      document.getElementById('productId')?.focus()
+    }
+  }, [status])
 
   const selectedProduct = useMemo(
     () => products.find((product) => product.id === form.productId) ?? null,
@@ -183,7 +197,7 @@ export default function Order() {
   const update = (field) => (event) => {
     const raw = event.target.value
     const value =
-      field === 'quantity' ? Math.max(1, Math.min(20, Number(raw) || 1)) : raw
+      field === 'quantity' ? Math.max(1, Math.min(20, Math.round(Number(raw) || 1))) : raw
 
     setForm((current) => ({ ...current, [field]: value }))
     setErrors((current) => ({ ...current, [field]: undefined }))
@@ -214,6 +228,19 @@ export default function Order() {
     return next
   }
 
+  const focusFirstError = (next) => {
+    const first = ['productId', 'colour', 'name', 'phone', 'email', 'address'].find(
+      (field) => next[field],
+    )
+    if (!first) return
+
+    const target =
+      first === 'colour'
+        ? document.querySelector('input[name="colour"]')
+        : document.getElementById(first)
+    target?.focus()
+  }
+
   const buildMessage = () =>
     [
       'Hello earthform! I would like to place an order.',
@@ -239,7 +266,10 @@ export default function Order() {
   const sendOnWhatsApp = () => {
     const next = validate()
     setErrors(next)
-    if (Object.keys(next).length > 0) return
+    if (Object.keys(next).length > 0) {
+      focusFirstError(next)
+      return
+    }
 
     const opened = window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
     if (!opened) window.location.href = whatsappUrl
@@ -249,7 +279,11 @@ export default function Order() {
     event.preventDefault()
     const next = validate()
     setErrors(next)
-    if (Object.keys(next).length > 0 || status === 'sending') return
+    if (Object.keys(next).length > 0) {
+      focusFirstError(next)
+      return
+    }
+    if (status === 'sending') return
 
     setStatus('sending')
 
@@ -287,6 +321,7 @@ export default function Order() {
   }
 
   const resetOrder = () => {
+    resetFocusRef.current = true
     setForm(INITIAL)
     setErrors({})
     setHoneypot('')
@@ -336,7 +371,13 @@ export default function Order() {
                   <span className="grid h-16 w-16 place-items-center rounded-full bg-sage-mist text-moss">
                     <Check size={28} />
                   </span>
-                  <h2 className="mt-6 font-display text-3xl text-moss">Order request sent.</h2>
+                  <h2
+                    ref={successRef}
+                    tabIndex={-1}
+                    className="mt-6 font-display text-3xl text-moss focus:outline-none"
+                  >
+                    Order request sent.
+                  </h2>
                   <p className="mt-3 max-w-md text-pretty text-sm leading-relaxed text-bark-soft">
                     We'll reply within two studio days to confirm availability, delivery and
                     payment. If you don't hear from us, message us on WhatsApp.
@@ -430,16 +471,25 @@ export default function Order() {
                     </div>
 
                     <div className="sm:col-span-2">
-                      <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-moss">
+                      <span
+                        id="colour-label"
+                        className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-moss"
+                      >
                         Colour
                       </span>
-                      <div className="flex flex-wrap gap-2">
+                      <div
+                        role="radiogroup"
+                        aria-labelledby="colour-label"
+                        aria-invalid={Boolean(errors.colour)}
+                        aria-describedby={errors.colour ? 'colour-error' : undefined}
+                        className="flex flex-wrap gap-2"
+                      >
                         {COLOURS.map(({ name, value }) => {
                           const active = form.colour === name
                           return (
                             <label
                               key={name}
-                              className={`inline-flex cursor-pointer items-center gap-2 rounded-full border px-3.5 py-2 text-xs font-medium transition-colors ${
+                              className={`inline-flex cursor-pointer items-center gap-2 rounded-full border px-3.5 py-2 text-xs font-medium transition-colors focus-within:ring-2 focus-within:ring-sage/60 focus-within:ring-offset-2 ${
                                 active
                                   ? 'border-moss bg-sage-mist text-moss'
                                   : 'border-sand-deep/70 bg-cream text-bark-soft hover:border-moss/40'
@@ -533,9 +583,12 @@ export default function Order() {
                     </div>
 
                     <div>
-                      <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-moss">
+                      <label
+                        htmlFor="quantity"
+                        className="mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-moss"
+                      >
                         Quantity
-                      </span>
+                      </label>
                       <div className="flex items-center gap-2">
                         <button
                           type="button"
@@ -551,6 +604,8 @@ export default function Order() {
                           type="number"
                           min="1"
                           max="20"
+                          step="1"
+                          inputMode="numeric"
                           value={form.quantity}
                           onChange={update('quantity')}
                           className="h-11 w-16 rounded-2xl border border-sand-deep/70 bg-cream px-0 text-center text-sm text-bark focus:border-moss focus:outline-none focus:ring-2 focus:ring-sage/30"
