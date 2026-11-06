@@ -2,11 +2,14 @@ import { useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { X, Leaf } from 'lucide-react'
+import useScrollLock from '@hooks/useScrollLock'
 import PlaceholderArt from './PlaceholderArt'
 import ColorSwatches from './ColorSwatches'
 import { CONTACT } from '@data/site'
 
 export default function QuickViewModal({ product, onClose }) {
+  useScrollLock(Boolean(product))
+
   useEffect(() => {
     if (!product) return
 
@@ -15,12 +18,9 @@ export default function QuickViewModal({ product, onClose }) {
     }
 
     document.addEventListener('keydown', onKeyDown)
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
 
     return () => {
       document.removeEventListener('keydown', onKeyDown)
-      document.body.style.overflow = previousOverflow
     }
   }, [product, onClose])
 

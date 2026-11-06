@@ -4,8 +4,8 @@ export const CONTACT = {
   phoneHref: 'tel:+94740179366',
   whatsapp: 'https://wa.me/94740179366',
   instagram: {
-    handle: '@earthform',
-    url: 'https://instagram.com/earthform',
+    handle: '@_earthform_',
+    url: 'https://instagram.com/_earthform_',
   },
   tiktok: {
     handle: '@earthform0',

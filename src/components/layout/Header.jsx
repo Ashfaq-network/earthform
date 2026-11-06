@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Menu, X, Instagram, Music2 } from 'lucide-react'
 import Logo from '@components/ui/Logo'
 import useSameRouteScroll from '@hooks/useSameRouteScroll'
+import useScrollLock from '@hooks/useScrollLock'
 import { CONTACT } from '@data/site'
 
 const NAV = [
@@ -18,16 +19,11 @@ export default function Header() {
   const location = useLocation()
   const scrollIfSame = useSameRouteScroll()
 
+  useScrollLock(open)
+
   useEffect(() => {
     setOpen(false)
   }, [location.pathname])
-
-  useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : ''
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [open])
 
   return (
     <>

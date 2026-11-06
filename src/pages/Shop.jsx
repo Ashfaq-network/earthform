@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, Package, Hand, Gift } from 'lucide-react'
 
 import PageShell from '@components/ui/PageShell'
-import SectionHeading from '@components/ui/SectionHeading'
 import ProductCard from '@components/ui/ProductCard'
 import QuickViewModal from '@components/ui/QuickViewModal'
 import Reveal from '@components/ui/Reveal'
