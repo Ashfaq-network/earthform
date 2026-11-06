@@ -164,7 +164,7 @@ export default function About() {
                     opacity="0.85"
                   />
                 </svg>
-                <span className="font-script text-6xl leading-none text-moss">Aneesha</span>
+                <span className="font-script text-6xl leading-none text-moss">Shahnaz</span>
                 <span className="text-[0.6rem] font-semibold uppercase tracking-[0.28em] text-moss/65">
                   founder · earthform
                 </span>
@@ -205,7 +205,7 @@ export default function About() {
             <div className="mt-8 flex items-center gap-4">
               <span className="h-px w-12 bg-terra/50" />
               <div>
-                <p className="font-script text-2xl text-moss">— Aneesha</p>
+                <p className="font-script text-2xl text-moss">— Shahnaz</p>
                 <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-bark-soft">
                   Aneesha Shahnaz Nassar · Founder
                 </p>
